@@ -59,4 +59,61 @@ class CreateVideoTest extends TestCase
                 ->etc();
         });
     }
+
+    /**
+     * @throws \JsonException
+     */
+    public function test_return_unpublished_video(): void
+    {
+        // create data with faker
+        $url = $this->faker->url();
+        $description = $this->faker->sentence();
+
+        // send request
+        $response = $this->postJson('/api/video/add', [
+            'url' => $url,
+            'description' => $description,
+        ]);
+
+        // test return statement
+//        dd(json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR));
+
+        // check if the response is correct
+        $response->assertJson(function (AssertableJson $json) {
+            $json->where('is_published', 0)->etc();
+        });
+    }
+
+    public function test_add_description_if_sent(): void
+    {
+        // create data with faker
+        $url = $this->faker->url();
+
+        // send request
+        $response = $this->postJson('/api/video/add', [
+            'url' => $url,
+            'description' => 'test_description',
+        ]);
+
+        // check if the response is correct
+        $response->assertJson(function (AssertableJson $json) {
+            $json->where('description', 'test_description')
+                ->etc();
+        });
+    }
+
+    public function test_validate_required_fields(): void
+    {
+        // send request
+        $response = $this->postJson('/api/video/add', []);
+
+        // check if the response is correct
+        $response->assertStatus(422);
+        $response->assertJson(function (AssertableJson $json) {
+            $json->where('errors.url.0', 'The url field is required.')
+                ->has('errors.url')
+                ->etc();
+        });
+    }
+
 }

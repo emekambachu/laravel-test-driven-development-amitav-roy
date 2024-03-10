@@ -9,7 +9,11 @@ class VideoController extends Controller
 {
     public function index()
     {
-        return view('video');
+        $videos = Video::query()->published()
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return response($videos, 200);
     }
 
     public function store(Request $request)
