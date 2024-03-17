@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Video;
 
+use App\Models\User;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,8 +15,10 @@ class VideoListTest extends TestCase
 
     public function test_get_video_list(): void
     {
+        $user = User::factory()->create();
+
         Video::factory()->count(10)->create();
-        $response = $this->getJson('/api/video');
+        $response = $this->actingAs($user)->getJson('/api/video');
 
         // test return statement
         // dd(json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR));
@@ -58,5 +61,11 @@ class VideoListTest extends TestCase
                 })
                 ->etc();
         });
+    }
+
+    public function test_allow_only_authenticated_user_to_view_videos(): void
+    {
+        $response = $this->getJson('/api/video');
+        $response->assertUnauthorized();
     }
 }
