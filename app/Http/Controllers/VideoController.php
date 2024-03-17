@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VideoController extends Controller
 {
@@ -30,7 +31,7 @@ class VideoController extends Controller
         $video = Video::create([
             'url' => $postData['url'],
             'description' => $desc,
-            'user_id' => 1,
+            'user_id' => Auth::user()->id,
             'type' => 'youtube',
             'is_published' => 0,
         ]);

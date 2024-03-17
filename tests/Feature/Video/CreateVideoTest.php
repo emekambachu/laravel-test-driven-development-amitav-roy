@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Video;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -15,12 +16,15 @@ class CreateVideoTest extends TestCase
      */
     public function test_create_new_video(): void
     {
+        // create user for acting as a logged user
+        $user = User::factory()->create();
+
         // create data with faker
         $url = $this->faker->url();
         $description = $this->faker->sentence();
 
         // send request
-        $response = $this->postJson('/api/video/add', [
+        $response = $this->actingAs($user)->postJson('/api/video/add', [
             'url' => $url,
             'description' => $description,
         ]);
@@ -29,7 +33,7 @@ class CreateVideoTest extends TestCase
         $this->assertDatabaseHas('videos', [
             'url' => $url,
             'description' => $description,
-            'user_id' => 1,
+            //'user_id' => 1, hide because of actingAs user method in json method
             'type' => 'youtube',
             'is_published' => 0,
         ]);
@@ -40,12 +44,15 @@ class CreateVideoTest extends TestCase
 
     public function test_return_video_in_response(): void
     {
+        // create user for acting as a logged user
+        $user = User::factory()->create();
+
         // create data with faker
         $url = $this->faker->url();
         $description = $this->faker->sentence();
 
         // send request
-        $response = $this->postJson('/api/video/add', [
+        $response = $this->actingAs($user)->postJson('/api/video/add', [
             'url' => $url,
             'description' => $description,
         ]);
@@ -114,6 +121,36 @@ class CreateVideoTest extends TestCase
                 ->has('errors.url')
                 ->etc();
         });
+    }
+
+    public function test_add_logged_in_user_id_in_created_video(): void
+    {
+        User::factory()->count(5)->create();
+        // create user for acting as a logged user
+        $user = User::factory()->create();
+
+        // create data with faker
+        $url = $this->faker->url();
+
+        // send request
+        $response = $this->actingAs($user)->postJson('/api/video/add', [
+            'url' => $url,
+        ]);
+
+        // check if the response is correct
+        $response->assertJson(function (AssertableJson $json) use ($user, $url) {
+            $json->where('user_id', $user->id)
+                ->where('url', $url)
+                ->etc();
+        });
+
+        // check if data is in the database
+        $this->assertDatabaseHas('videos', [
+            'url' => $url,
+            'user_id' => $user->id,
+            'type' => 'youtube',
+            'is_published' => 0,
+        ]);
     }
 
 }
