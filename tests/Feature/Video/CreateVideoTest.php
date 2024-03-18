@@ -20,7 +20,9 @@ class CreateVideoTest extends TestCase
         $user = User::factory()->create();
 
         // create data with faker
-        $url = $this->faker->url();
+        // test will fail if the url is not a valid youtube url
+        $url = 'https://www.youtube.com/watch?v=GjkQNAZbxKY';
+        //$url = $this->faker->url();
         $description = $this->faker->sentence();
 
         // send request

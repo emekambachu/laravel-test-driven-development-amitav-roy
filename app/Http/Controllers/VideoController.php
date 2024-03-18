@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Video;
+use App\Rules\YoutubeUrlRule;
 use App\Services\Video\VideoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class VideoController extends Controller
 {
@@ -23,10 +25,13 @@ class VideoController extends Controller
         return response($videos, 200);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function store(Request $request)
     {
         $postData = $this->validate($request, [
-            'url' => ['required', 'url'],
+            'url' => ['required', 'url', new YoutubeUrlRule()],
             'description' => ['sometimes'],
         ]);
 
