@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Video;
+use App\Services\Video\VideoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class VideoController extends Controller
 {
+    public function __construct(VideoService $video)
+    {
+        $this->video = $video;
+    }
+
     public function index()
     {
         $videos = Video::query()->published()
@@ -24,17 +30,7 @@ class VideoController extends Controller
             'description' => ['sometimes'],
         ]);
 
-        $desc = $request->has('description')
-            ? $request->input('description')
-            : '';
-
-        $video = Video::create([
-            'url' => $postData['url'],
-            'description' => $desc,
-            'user_id' => Auth::user()->id,
-            'type' => 'youtube',
-            'is_published' => 0,
-        ]);
+        $video = $this->video->submitVideo(Auth::user(), $postData);
 
         return response($video, 201);
     }
