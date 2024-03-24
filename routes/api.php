@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/user/login', [LoginController::class, 'handleLogin'])
+    ->name('user.login');
 
 Route::group(['middleware' => 'auth:sanctum'], static function () {
     Route::get('/video', [VideoController::class, 'index']);
