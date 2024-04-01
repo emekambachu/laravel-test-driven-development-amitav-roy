@@ -37,7 +37,13 @@
 					"name": "User | Login (PROD)",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
@@ -48,7 +54,7 @@
 								},
 								{
 									"key": "password",
-									"value": "password",
+									"value": "passwo",
 									"type": "text"
 								}
 							]
