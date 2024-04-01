@@ -31,6 +31,8 @@ Route::group(['middleware' => 'auth:sanctum'], static function () {
     // Admin routes
     Route::group(['middleware' => 'admin', 'prefix' => 'admin'], static function () {
         Route::get('/video/list/unpublished', [AdminVideoController::class, 'unpublished']);
+        Route::post('/video/publish', [AdminVideoController::class, 'publish']);
+
     });
 });
 

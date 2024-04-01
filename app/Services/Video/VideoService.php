@@ -30,4 +30,12 @@ class VideoService
         $pattern = '/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/';
         return preg_match($pattern, $url);
     }
+
+    public function publishVideo($id): Video
+    {
+        $video = $this->video()->findOrFail($id);
+        $video->is_published === 1 ? $video->is_published = 0 : $video->is_published = 1;
+        $video->save();
+        return $video;
+    }
 }
