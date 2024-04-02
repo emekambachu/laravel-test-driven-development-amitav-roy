@@ -56,9 +56,16 @@ class VideoPublishedTest extends TestCase
             'is_published' => 1
         ]);
 
+        // check if the email was sent to the correct user
+        // You can't test if the email was delivered,
+        // but you can test if the emil was sent to the correct user
         Mail::assertQueued(VideoPublishedEmailToOwner::class, static function ($mail) use ($user) {
             return $mail->hasTo($user->email);
         });
+
+//        Mail::assertQueued(VideoPublishedEmailToOwner::class, static function ($mail) use ($user) {
+//            return $mail->hasTo($user->email);
+//        });
 
     }
 }

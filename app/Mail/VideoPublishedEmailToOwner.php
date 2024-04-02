@@ -23,33 +23,42 @@ class VideoPublishedEmailToOwner extends Mailable implements ShouldQueue
         $this->video = $video;
     }
 
-    /**
-     * Get the message envelope.
+/**
+     * Build the message.
      */
-    public function envelope(): Envelope
+    public function build(): VideoPublishedEmailToOwner
     {
-        return new Envelope(
-            subject: 'Video Published Email To Owner',
-        );
+        return $this->subject('Video Published Email To Owner')
+            ->view('emails.videos.publish-email-to-owner');
     }
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.videos.publish-email-to-owner',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
-    }
+//    /**
+//     * Get the message envelope.
+//     */
+//    public function envelope(): Envelope
+//    {
+//        return new Envelope(
+//            subject: 'Video Published Email To Owner',
+//        );
+//    }
+//
+//    /**
+//     * Get the message content definition.
+//     */
+//    public function content(): Content
+//    {
+//        return new Content(
+//            view: 'emails.videos.publish-email-to-owner',
+//        );
+//    }
+//
+//    /**
+//     * Get the attachments for the message.
+//     *
+//     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+//     */
+//    public function attachments(): array
+//    {
+//        return [];
+//    }
 }
