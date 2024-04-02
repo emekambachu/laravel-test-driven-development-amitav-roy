@@ -2,6 +2,7 @@
 
 namespace App\Services\Video;
 
+use App\Events\VideoPublishedEvent;
 use App\Models\Video;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +37,9 @@ class VideoService
         $video = $this->video()->findOrFail($id);
         $video->is_published === 1 ? $video->is_published = 0 : $video->is_published = 1;
         $video->save();
+
+        event(new VideoPublishedEvent($video));
+
         return $video;
     }
 }
